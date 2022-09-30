@@ -1,0 +1,10 @@
+# csproj file path
+csproj_file: TizenNoXaml.csproj
+
+# files monitored for dirty/modified status
+files:
+  - TizenNoXaml.csproj
+  - TizenNoXaml.cs
+  - App.cs
+  - tizen-manifest.xml
+  - shared/res/TizenNoXaml.png

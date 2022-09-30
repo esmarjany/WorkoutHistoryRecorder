@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.app2">
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="31" />
+	
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+	<uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
+	<uses-permission android:name="com.samsung.wmanager.APP" />
+	<uses-permission android:name="com.samsung.wmanager.ENABLE_NOTIFICATION" />
+	<uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<queries>
+		<package android:name="com.samsung.accessory" />
+		<package android:name="com.samsung.android.providers.context" />
+		<package android:name="com.samsung.android.app.watchmanager" />
+		<package android:name="com.samsung.accessory.safiletransfer" />
+		<package android:name="com.samsung.accessory.goproviders" />
+		<package android:name="com.samsung.accessory.saproviders" />
+	</queries>
+	<application android:label="App2.Android" android:theme="@style/MainTheme">
+		<service android:name="WearableCompanion.Droid.ProviderService" />
+		<service android:name="com.samsung.android.sdk.accessory.SAService" />		
+		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver" android:exported="true">
+			<intent-filter>
+				<action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
+			</intent-filter>
+		</receiver>
+		<receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver" android:exported="true">
+			<intent-filter>
+				<action android:name="com.samsung.accessory.action.SERVICE_CONNECTION_REQUESTED" />
+			</intent-filter>
+		</receiver>
+		<meta-data android:name="AccessoryServicesLocation" android:value="/res/xml/accessoryservices.xml" />
+	</application>
+</manifest>

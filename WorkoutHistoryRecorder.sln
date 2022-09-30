@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32811.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Phone App", "Phone App", "{81F33DCB-73CA-4B6C-8BBC-AD7E5789AB49}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Watch App", "Watch App", "{9889BB2F-9781-410A-B80E-B6D66A9BF004}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.WatchApp", "Watch App\WorkoutHistoryRecorder.WatchApp.csproj", "{81DCD2E7-A819-4D21-846E-06ACE59D7179}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.PhoneApp", "Phone App\WorkoutHistoryRecorder.PhoneApp\WorkoutHistoryRecorder.PhoneApp.csproj", "{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutHistoryRecorder.PhoneApp.Android", "Phone App\WorkoutHistoryRecorder.PhoneApp.Android\WorkoutHistoryRecorder.PhoneApp.Android.csproj", "{B0470C68-1738-44DD-8AEC-2A17E048B799}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81DCD2E7-A819-4D21-846E-06ACE59D7179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DCD2E7-A819-4D21-846E-06ACE59D7179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DCD2E7-A819-4D21-846E-06ACE59D7179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DCD2E7-A819-4D21-846E-06ACE59D7179}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0470C68-1738-44DD-8AEC-2A17E048B799}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81DCD2E7-A819-4D21-846E-06ACE59D7179} = {9889BB2F-9781-410A-B80E-B6D66A9BF004}
+		{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC} = {81F33DCB-73CA-4B6C-8BBC-AD7E5789AB49}
+		{B0470C68-1738-44DD-8AEC-2A17E048B799} = {81F33DCB-73CA-4B6C-8BBC-AD7E5789AB49}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29ADED2F-F38E-4D5F-A4BB-BDDF603C6AE2}
+	EndGlobalSection
+EndGlobal
