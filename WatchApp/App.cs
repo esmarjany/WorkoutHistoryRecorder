@@ -6,6 +6,7 @@ using Samsung.Sap;
 using System.Text;
 using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
 using Xamarin.Forms.Markup;
+using WorkoutHistoryRecorder.WatchApp.Pages;
 
 namespace TizenNoXaml
 {
@@ -29,10 +30,27 @@ namespace TizenNoXaml
                         Command = new Command(Connect)
                     },
                     AppButton(),
-                    MessageToPhone()
+                    MessageToPhone(),
+                    ListButton()
                 }
                 }
             };
+        }
+
+        private Button ListButton()
+        {
+            var button = new Button
+            {
+                Text = "List",
+                Command = new Command(DeepLinkLaunchStore)
+            };
+            button.Clicked += Button_Clicked;
+            return button;
+        }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+            MainPage.Navigation.PushModalAsync(new WorkoutListPage());
         }
 
         private Button AppButton()

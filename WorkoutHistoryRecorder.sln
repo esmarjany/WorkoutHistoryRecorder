@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Phone App", "Phone App", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Watch App", "Watch App", "{9889BB2F-9781-410A-B80E-B6D66A9BF004}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.WatchApp", "Watch App\WorkoutHistoryRecorder.WatchApp.csproj", "{81DCD2E7-A819-4D21-846E-06ACE59D7179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.WatchApp", "WatchApp\WorkoutHistoryRecorder.WatchApp.csproj", "{81DCD2E7-A819-4D21-846E-06ACE59D7179}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.PhoneApp", "Phone App\WorkoutHistoryRecorder.PhoneApp\WorkoutHistoryRecorder.PhoneApp.csproj", "{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkoutHistoryRecorder.PhoneApp", "PhoneApp\WorkoutHistoryRecorder.PhoneApp\WorkoutHistoryRecorder.PhoneApp.csproj", "{A46B6919-9017-4FF8-A1FB-8EF0FFDC71EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutHistoryRecorder.PhoneApp.Android", "Phone App\WorkoutHistoryRecorder.PhoneApp.Android\WorkoutHistoryRecorder.PhoneApp.Android.csproj", "{B0470C68-1738-44DD-8AEC-2A17E048B799}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutHistoryRecorder.PhoneApp.Android", "PhoneApp\WorkoutHistoryRecorder.PhoneApp.Android\WorkoutHistoryRecorder.PhoneApp.Android.csproj", "{B0470C68-1738-44DD-8AEC-2A17E048B799}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,17 @@
+import("$tizen_core/build/dotnet/project.gni")
+
+dotnet_project("WatchApp") {
+  
+   
+  csprojpath = "WorkoutHistoryRecorder.WatchApp.csproj"
+  is_dep = false
+  files = [
+      "WorkoutHistoryRecorder.WatchApp.csproj",
+      "WatchApp.cs",
+      "App.cs",
+      "tizen-manifest.xml",
+      "shared/res/TizenNoXaml.png",
+  ]
+  deps = [
+  ]
+}

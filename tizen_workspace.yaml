@@ -62,7 +62,7 @@ tizen_nuixaml_version: 1.0.32
 tizen_hotreload_version: 1.0.1
 
 # Working folder/project in the multi project workspace, paths to the project root or the manifest/config/csproj file
-working_folder: C:\Users\YBK\source\repos\TizenDotNet\App1
+working_folder: C:\Users\YBK\source\repos\TizenDotNet\WatchApp
 
 # Default path for Google Chrome
 chrome_path: C:/Program Files (x86)/Google/Chrome/Application/chrome.exe

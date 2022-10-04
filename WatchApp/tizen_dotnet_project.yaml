@@ -1,10 +1,10 @@
 # csproj file path
-csproj_file: TizenNoXaml.csproj
+csproj_file: WorkoutHistoryRecorder.WatchApp.csproj
 
 # files monitored for dirty/modified status
 files:
-  - TizenNoXaml.csproj
-  - TizenNoXaml.cs
+  - WorkoutHistoryRecorder.WatchApp.csproj
+  - WatchApp.cs
   - App.cs
   - tizen-manifest.xml
   - shared/res/TizenNoXaml.png
