@@ -1,38 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V4.App;
-using Android.Views;
-using Android.Widget;
 using AndroidX.Core.App;
 using App2;
 using App2.Droid;
-using Com.Samsung.Accessory;
+using App2.Droid.Provider;
 using Com.Samsung.Android.Sdk;
 using Com.Samsung.Android.Sdk.Accessory;
 using Java.Interop;
+using Newtonsoft.Json;
 // https://docs.microsoft.com/en-us/xamarin/android/platform/binding-java-library/
 // https://xamarinhelp.com/creating-xamarin-android-binding-library/
-// using Java binding
+
 
 [assembly: Xamarin.Forms.Dependency(typeof(WearableCompanion.Droid.ProviderService))]
 namespace WearableCompanion.Droid
 {
     [Service(Exported = true, Name = "WearableCompanion.Droid.ProviderService")]
-    public class ProviderService : SAAgent, IProviderService
+    public partial class ProviderService : SAAgent, IProviderService
     {
         public static readonly string TAG = typeof(ProviderService).Name;
         public static IBinder mBinder { get; private set; }
+
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
         public static ProviderServiceSocket mSocketServiceProvider;
-        private bool _isRunning;
-        private Context _context;
+
         private readonly Task _task;
         private static readonly int CHANNEL_ID = 104;
 
@@ -53,7 +49,6 @@ namespace WearableCompanion.Droid
         public override void OnDestroy()
         {
             base.OnDestroy();
-            _isRunning = false;
 
             if (_task != null && _task.Status == TaskStatus.RanToCompletion)
             {
@@ -63,7 +58,6 @@ namespace WearableCompanion.Droid
 
         // Explanation of whats happening, Bound Service
         // https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/creating-a-service/bound-services
-
         public override IBinder OnBind(Intent intent)
         {
             // This method must always be implemented
@@ -82,64 +76,16 @@ namespace WearableCompanion.Droid
         [return: GeneratedEnum]
         public override void OnStart(Intent intent, int startId)
         {
-            FindPeerAgents(); 
+            FindPeerAgents();
             base.OnStart(intent, startId);
         }
-       
-        void CreateNotificationChannel()
-        {
-            manager = (NotificationManager)Application.Context.GetSystemService(Application.NotificationService);
-
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-            {
-                var channelNameJava = new Java.Lang.String(channelName);
-                var channel = new NotificationChannel(channelId, channelNameJava, NotificationImportance.Default)
-                {
-                    Description = "Description test"
-                };
-                manager.CreateNotificationChannel(channel);
-            }
-            channelInitialized = true;
-        }
-
 
         public override void OnCreate()
         {
             base.OnCreate();
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-            {
-                if (!channelInitialized)
-                {
-                    CreateNotificationChannel();
-                }
-
-                int notifyID = 1;
-
-                Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
-
-                PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.Immutable);
-
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
-                    .SetAutoCancel(true)
-                    .SetContentTitle("Wearable")
-                    .SetContentText("Connected to your watch")
-                    .SetContentIntent(pendingIntent)
-
-                    .SetSmallIcon(Resource.Drawable.abc_btn_check_to_on_mtrl_000)
-
-                    .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
-                    .SetChannelId(channelId)
-                    .SetPriority(1)
-                    .SetVisibility(1)
-                    .SetCategory(Android.App.Notification.CategoryService);
-
-                StartForeground(notifyID, builder.Build());
-            }
-
-            _context = this;
-            _isRunning = false;
+                CreateNotification();
 
             var mAccessory = new SA();
             try
@@ -166,13 +112,59 @@ namespace WearableCompanion.Droid
             bool isFeatureEnabled = mAccessory.IsFeatureEnabled(SA.DeviceAccessory);
 
         }
+
+        private void CreateNotification()
+        {
+            if (!channelInitialized)
+            {
+                CreateNotificationChannel();
+            }
+
+            int notifyID = 1;
+
+            Intent intent = new Intent(Application.Context, typeof(MainActivity));
+            intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
+
+            PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.Immutable);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
+                .SetAutoCancel(true)
+                .SetContentTitle("Wearable")
+                .SetContentText("Connected to your watch")
+                .SetContentIntent(pendingIntent)
+                .SetSmallIcon(Resource.Drawable.abc_btn_check_to_on_mtrl_000)
+                .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
+                .SetChannelId(channelId)
+                .SetPriority(1)
+                .SetVisibility(1)
+                .SetCategory(Android.App.Notification.CategoryService);
+
+            StartForeground(notifyID, builder.Build());
+        }
+
+        void CreateNotificationChannel()
+        {
+            manager = (NotificationManager)Application.Context.GetSystemService(Application.NotificationService);
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channelNameJava = new Java.Lang.String(channelName);
+                var channel = new NotificationChannel(channelId, channelNameJava, NotificationImportance.Default)
+                {
+                    Description = "Description test"
+                };
+                manager.CreateNotificationChannel(channel);
+            }
+            channelInitialized = true;
+        }
+
         public void SendData(string msg)
         {
             if (mSocketServiceProvider != null)
             {
                 try
                 {
-                    mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(msg));
+                    mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.Unicode.GetBytes(msg));
                 }
                 catch (Exception e)
                 {
@@ -180,7 +172,6 @@ namespace WearableCompanion.Droid
                 }
             }
         }
-
 
         protected override void OnFindPeerAgentsResponse(SAPeerAgent[] p0, int result)
         {
@@ -218,6 +209,7 @@ namespace WearableCompanion.Droid
                 {
                     MainPage.StaticConnection = "Connected to watch";
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
+                    mSocketServiceProvider.OnDataRecived += MSocketServiceProvider_OnDataRecived;
                 }
 
             }
@@ -226,9 +218,44 @@ namespace WearableCompanion.Droid
 #if DEBUG
                 Console.WriteLine("onServiceConnectionResponse, CONNECTION_ALREADY_EXIST");
 #endif
-
             }
+        }
 
+        private void MSocketServiceProvider_OnDataRecived(byte[] bytes)
+        {
+            // Check received data 
+            string message = System.Text.Encoding.Unicode.GetString(bytes);
+            MainPage.ReceivedMessage = message;
+#if DEBUG
+            Console.WriteLine("Received: ", message);
+#endif
+
+            var whatcCommand = JsonConvert.DeserializeObject<WatchCommand>(message);
+            if (whatcCommand != null)
+            {
+                switch (whatcCommand.CommandType)
+                {
+                    case CommandType.None:
+                        break;
+                    case CommandType.GetWorkoutList:
+                        SendList();
+                        break;
+                    case CommandType.StoreRecord:
+                        break;
+                    case CommandType.Message:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void SendList()
+        {
+            var list = new List<WorkoutRecord> {
+           };
+            var res = JsonConvert.SerializeObject(new PhoneResult(CommandType.GetWorkoutList, JsonConvert.SerializeObject(list)));
+            SendData(res);
         }
 
         private bool processUnsupportedException(SsdkUnsupportedException e)
@@ -285,51 +312,6 @@ namespace WearableCompanion.Droid
                 return false;
             }
 
-        }
-
-
-
-        public class AgentBinder : Binder
-        {
-            public AgentBinder(ProviderService service) => Service = service;
-
-            public ProviderService Service { get; private set; }
-        }
-
-        // the connection between watch and android
-        public class ProviderServiceSocket : SASocket
-        {
-            [Export(SuperArgumentsString = "\"ProviderServiceSocket\"")]
-            public ProviderServiceSocket() : base(p0: "ProviderServiceSocket")
-            {
-
-            }
-
-
-            public override void OnReceive(int channelId, byte[] bytes)
-            {
-                // Check received data 
-                string message = System.Text.Encoding.UTF8.GetString(bytes);
-
-                MainPage.ReceivedMessage = message;
-#if DEBUG
-                Console.WriteLine("Received: ", message);
-#endif
-            }
-
-            protected override void OnServiceConnectionLost(int p0)
-            {
-                // ResetCache();
-                Close();
-                MainPage.StaticConnection = "No connection to watch";
-                Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
-                Application.Context.StopService(serviceIntent);
-            }
-            public override void OnError(int p0, string p1, int p2)
-            {
-
-                // Error handling
-            }
         }
     }
 }

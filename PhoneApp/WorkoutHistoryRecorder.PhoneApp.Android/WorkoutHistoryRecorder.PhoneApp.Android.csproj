@@ -55,6 +55,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
     <PackageReference Include="Samsung.Sap.Runtime">
       <Version>1.1.0</Version>
     </PackageReference>
@@ -65,8 +68,10 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Provider\AgentBinder.cs" />
     <Compile Include="MainActivity.cs" />
-    <Compile Include="ProviderService.cs" />
+    <Compile Include="Provider\ProviderService.cs" />
+    <Compile Include="Provider\ProviderServiceSocket.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -96,8 +101,12 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\App2\WorkoutHistoryRecorder.PhoneApp.csproj">
-      <Project>{8C9533BD-6663-446C-9CFE-3742D0116C0D}</Project>
+    <ProjectReference Include="..\..\Common\WorkoutHistoryRecorder.Contract\WorkoutHistoryRecorder.Contract.csproj">
+      <Project>{8a9b4e30-2e68-4059-ac70-a3a8749892d1}</Project>
+      <Name>WorkoutHistoryRecorder.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WorkoutHistoryRecorder.PhoneApp\WorkoutHistoryRecorder.PhoneApp.csproj">
+      <Project>{a46b6919-9017-4ff8-a1fb-8ef0ffdc71ec}</Project>
       <Name>WorkoutHistoryRecorder.PhoneApp</Name>
     </ProjectReference>
   </ItemGroup>

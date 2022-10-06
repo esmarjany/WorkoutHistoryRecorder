@@ -18,8 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Samsung.Sap.Runtime" Version="1.1.0" />
     <PackageReference Include="Tizen.Wearable.CircularUI" Version="1.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\WorkoutHistoryRecorder.Contract\WorkoutHistoryRecorder.Contract.csproj" />
   </ItemGroup>
 
 </Project>
