@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TizenNoXaml;
-using WearableCompanion.Droid;
 using WorkoutHistoryRecorder.Contract;
 
 namespace WorkoutHistoryRecorder.WatchApp.Infra
@@ -30,8 +29,10 @@ namespace WorkoutHistoryRecorder.WatchApp.Infra
                 _dbContext = JsonConvert.DeserializeObject<DBContext>(File.ReadAllText(_storagePath));
                 if (_dbContext.WorkoutRecords == null)
                     _dbContext.WorkoutRecords = new List<WorkoutRecord>();
-                return;
+                
             }
+            if(_dbContext.Workouts.Any())
+                return;
             _dbContext = new DBContext();
             _dbContext.Workouts = new List<Workout> {
             new Workout(Guid.Parse("{26DBDEBD-21E9-4E79-A030-8D1ABE0ACA9C}"),"زیربغل سیمکش",1,"4*10"),
@@ -75,6 +76,12 @@ namespace WorkoutHistoryRecorder.WatchApp.Infra
         internal static IEnumerable<WorkoutRecord> GetWorkoutRecord(DateTime date)
         {
              return _dbContext.WorkoutRecords.Where(x => x.Date.Date == date).ToList();
+        }
+
+        public static void ResetDB()
+        {
+            _dbContext = new DBContext();
+            SaveChanges();
         }
     }
 

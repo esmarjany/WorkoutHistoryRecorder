@@ -18,6 +18,7 @@ using System.IO;
 using WorkoutHistoryRecorder.WatchApp.Infra;
 using WorkoutHistoryRecorder.Contract;
 using System.Threading.Tasks;
+using WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList;
 
 namespace TizenNoXaml
 {
@@ -26,16 +27,9 @@ namespace TizenNoXaml
         public App()
         {
             MyLoger.Log("App started!");
-            _SAPService = new SAPService();         
+            _SAPService = new SAPService();
             _SAPService.DataReceived += Connection_DataReceived;
-            StorageService.Init();
-            string dataPath = Tizen.Applications.Application.Current.DirectoryInfo.Data;
-            var filePath = Path.Combine(dataPath, "myFile.txt");
-            File.WriteAllText(filePath, "Salam");
-            var res = File.ReadAllText(filePath);
-            Toast.DisplayText(res);
-            Toast.DisplayText(filePath);
-
+            StorageService.Init();            
             MainPage = new CirclePage
             {
                 Content = new StackLayout
@@ -49,18 +43,30 @@ namespace TizenNoXaml
                     },
                     AppButton(),
                     MessageToPhone(),
+                    ClearFileByutton(),
                     ListButton()
                 }
                 }
             };
         }
+
+        private View ClearFileByutton()
+        {
+            return new Button
+            {
+                Text = "Reset DB",
+                Command = new Command(() => { StorageService.ResetDB();Toast.DisplayText("Reseted !!!"); })
+            };
+        }
+
         SAPService _SAPService;
+
         private Button ListButton()
         {
             var button = new Button { Text = "List" };
-            button.Clicked += (sender, e) =>
+            button.Clicked += async (sender, e) =>
             {
-                ShowList();// _SAPService.SendText(JsonConvert.SerializeObject(new WatchCommand(CommandType.GetWorkoutList, "")));
+                await ShowList();// _SAPService.SendText(JsonConvert.SerializeObject(new WatchCommand(CommandType.GetWorkoutList, "")));
             };
             return button;
         }
@@ -163,8 +169,17 @@ namespace TizenNoXaml
 
         private async Task ShowList()
         {
-            var PAGE = new WorkoutListPage(true);
-            await MainPage.Navigation.PushModalAsync(PAGE);
+            try
+            {
+                var PAGE = new WorkoutListPage(true);
+                await MainPage.Navigation.PushModalAsync(PAGE);
+            }
+            catch (Exception ex)
+            {
+                MyLoger.Log(ex.Message);
+                MyLoger.Log(ex.StackTrace);
+                throw;
+            }
         }
 
         protected override void OnStart()
@@ -188,6 +203,12 @@ namespace TizenNoXaml
         public static void Log(string content)
         {
             Tizen.Log.Info("MyApp", content);
+        }
+
+        internal static void Log(Exception ex)
+        {
+            Log(ex.Message);
+            Log(ex.StackTrace);
         }
     }
 }

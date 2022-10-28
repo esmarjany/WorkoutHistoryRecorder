@@ -1,7 +1,5 @@
 ﻿using System;
-using WorkoutHistoryRecorder.Contract;
-
-namespace WearableCompanion.Droid
+namespace WorkoutHistoryRecorder.Contract
 {
     public class WorkoutRecord
     {
@@ -15,7 +13,8 @@ namespace WearableCompanion.Droid
 
         public Guid ID { get; }
         public Guid WorkoutID { get; }
-        public decimal Record { get; }
-        public DateTime Date { get;  }
+        public decimal Record { get; set; }
+        public DateTime Date { get; }
+        public bool IsDone { get => Record != 0; }
     }
 }

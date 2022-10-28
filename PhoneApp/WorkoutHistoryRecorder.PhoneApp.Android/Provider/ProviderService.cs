@@ -13,6 +13,7 @@ using Com.Samsung.Android.Sdk;
 using Com.Samsung.Android.Sdk.Accessory;
 using Java.Interop;
 using Newtonsoft.Json;
+using WorkoutHistoryRecorder.Contract;
 // https://docs.microsoft.com/en-us/xamarin/android/platform/binding-java-library/
 // https://xamarinhelp.com/creating-xamarin-android-binding-library/
 
