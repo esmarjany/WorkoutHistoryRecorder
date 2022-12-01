@@ -20,8 +20,11 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutRecords
 
         public override void Execute(object parameter)
         {
-            StorageService.AddWorkoutRecord(_workoutRecord.WorkoutRecord);
-            MyLoger.Log(_workoutRecord.WorkoutRecord.Record.ToString());
+            var cur = StorageService.GetWorkoutRecord(_workoutRecord.WorkoutRecord.ID);
+            if (cur == null)
+                StorageService.AddWorkoutRecord(_workoutRecord.WorkoutRecord);
+            else
+                StorageService.UpdateWorkoutRecord(_workoutRecord.WorkoutRecord);
             Application.Current.MainPage.Navigation.PopModalAsync();
         }
     }

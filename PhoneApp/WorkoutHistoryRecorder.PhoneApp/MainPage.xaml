@@ -4,14 +4,14 @@
              x:Class="App2.MainPage">
 
     <StackLayout HorizontalOptions="CenterAndExpand">
-        <Label Text="{Binding ConnectionString}"/>
         <Button Text="Close connection" Clicked="Button_Clicked_Close"/>
 
         <Entry Text="{Binding EntryString}" Placeholder="Enter message for watch"/>
         <Button Text="Send" Clicked="Button_Clicked_Send"/>
 
-        <Label Text="{Binding FromWatch}"/>
-        <Button Text="Refresh" Clicked="Button_Clicked_Refresh" VerticalOptions="EndAndExpand"/>
+        <Button Text="Workout Template List" Clicked="Button_Clicked" VerticalOptions="EndAndExpand"/>
+        <Button Text="Workout List" Clicked="Button_Clicked_2" VerticalOptions="EndAndExpand"/>
+        <Button Text="Workout Record List" Clicked="Button_Clicked_1"  VerticalOptions="EndAndExpand"/>
     </StackLayout>
 
 

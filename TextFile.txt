@@ -1,0 +1,13 @@
+Mobile App
+*1- Create RH db
+*2- Create RH Repo
+*3- Create SyncService
+4- Create UI
+	list days have record
+	list records for special day
+*5- Define workout
+*6- List Workout
+
+
+Watch App
+1- 

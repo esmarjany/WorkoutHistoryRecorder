@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography;
 using Tizen.Wearable.CircularUI.Forms;
-using TizenNoXaml;
 using WorkoutHistoryRecorder.Contract;
 using WorkoutHistoryRecorder.WatchApp.Infra;
 using WorkoutHistoryRecorder.WatchApp.Pages.WorkoutRecords;
@@ -17,17 +17,17 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList
     internal class WorkoutListPage : ContentPage
     {
         private IEnumerable<Workout> _workouts;
-        private readonly bool _showDays;
-        private readonly int _day;
+        private readonly bool _showTemplate;
+        private readonly int _templateID;
 
-        public WorkoutListPage(bool showDays, int day = 0)
+        public WorkoutListPage(bool showTemplate, int templateID = 0)
         {
-            _showDays = showDays;
-            _day = day;
+            _showTemplate = showTemplate;
+            _templateID = templateID;
 
-            if (!_showDays)
-                _workouts = StorageService.GetWorkouts(_day);
-            Content = new StackLayout { Children = { CreateListView(_showDays) } };
+            if (!_showTemplate)
+                _workouts = StorageService.GetWorkouts(_templateID);
+            Content = new StackLayout { Children = { CreateListView(_showTemplate) } };
 
         }
         CircleListView res;
@@ -75,12 +75,12 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList
 
             if (!showDays)
             {
-                var wors = StorageService.GetWorkoutRecord(DateTime.Now.Date);
+                var wors = StorageService.GetWorkoutRecordByDate(DateTime.Now.Date);
                 var items = _workouts.Select(wo =>
                 {
-                    var wor = wors.FirstOrDefault(x => x.WorkoutID == wo.ID);
+                    var wor = wors.SingleOrDefault(x => x.WorkoutID == wo.ID);
                     if (wor == null)
-                        wor = new WorkoutRecord(Guid.NewGuid(), wo.ID, 0, DateTime.Now);
+                        wor = new WorkoutRecord(0, wo.ID, 0, DateTime.Now);
 
                     return new WorkoutListVM(wor, wo);
                 });
@@ -88,10 +88,10 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList
                 res.ItemsSource = new ObservableCollection<WorkoutListVM>(items);
             }
             else
-                res.ItemsSource = new[] {
-                new WorkoutListVM("روز اول",1),
-                new WorkoutListVM("روز دوم",2),
-                new WorkoutListVM("روز سوم",3)};
+            {
+                var workoutTemplates = StorageService.GetWorkoutTemplates();
+                res.ItemsSource = workoutTemplates.Select(x => new WorkoutListVM(x.Title, x.ID));                
+            }
             return res;
         }
 

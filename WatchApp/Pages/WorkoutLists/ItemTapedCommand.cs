@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TizenNoXaml;
 using WorkoutHistoryRecorder.Contract;
 using WorkoutHistoryRecorder.WatchApp.Infra;
 using WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList;
@@ -37,7 +36,7 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutLists
             {
                 ContentPage page;
                 if (_workoutVM.Type == WorkoutListVMType.Day)
-                    page = new WorkoutListPage(false, _workoutVM.Day);
+                    page = new WorkoutListPage(false, _workoutVM.WorkoutID);
                 else
                     page = new WorkoutRecordPage(new WorkoutRecordVM(_workout, _workoutRecord));
                 await Application.Current.MainPage.Navigation.PushModalAsync(page);

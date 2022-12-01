@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WorkoutHistoryRecorder.PhoneApp.Pages.WorkoutRecordListPage"
+             Appearing="ContentPage_Appearing" >
+    <ContentPage.Content>
+        <StackLayout FlowDirection="RightToLeft">
+            <Picker Title="Workout" 
+                    ItemsSource="{Binding Workouts}" 
+                    ItemDisplayBinding="{Binding Title}" 
+                    SelectedItem="{Binding SelectedWorkout}"
+                    />
+            <Entry Keyboard="Numeric" Text="{Binding Working.Record}"></Entry>
+            <DatePicker  Date="{Binding Working.Date}"></DatePicker>
+
+            <Button Text="Save" Command="{Binding SaveCommand}"></Button>
+            <ListView ItemsSource="{Binding Records}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" >
+                                <Button Text="Del" Command="{Binding DeleteCommand} "></Button>
+                                <Button Text="Edit" Command="{Binding UpdateCommand} "></Button>
+                                <Label VerticalTextAlignment="Center"  Text="{Binding Workout.Title}"></Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

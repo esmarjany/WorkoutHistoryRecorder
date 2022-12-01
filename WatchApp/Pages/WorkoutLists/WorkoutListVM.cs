@@ -7,11 +7,11 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList
 {
     class WorkoutListVM : ViewModelBase
     {
-        public WorkoutListVM(string title, int value)
+        public WorkoutListVM(string title, int workoutID)
         {
             Type = WorkoutListVMType.Day;
             Title = title;
-            Day = value;
+            WorkoutID = workoutID;
             ItemTapedCommand = new ItemTapedCommand(this);
         }
         public WorkoutListVM(WorkoutRecord workoutRecord, Workout workout)
@@ -25,8 +25,7 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutList
         public WorkoutRecord WorkoutRecord { get; }
         public WorkoutListVMType Type { get; }
         public string Title { get; }
-        public int Day { get; }
-        //public bool IsWorkout { get => Type == WorkoutListVMType.Workout; }
+        public int WorkoutID { get; }
         public void IsDoneChange()
         {
             OnPropertyChanged(nameof(IsDone));

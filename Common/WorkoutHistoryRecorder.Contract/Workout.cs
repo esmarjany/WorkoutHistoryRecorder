@@ -4,20 +4,31 @@ using System.Text;
 
 namespace WorkoutHistoryRecorder.Contract
 {
-    public class Workout
+    public class Workout: EntityBase
     {
-        public Workout(Guid id, string title, int day, string amount)
+        public Workout(int id, string title, int workoutTemplateID, string amount)
         {
             ID = id;
             Title = title;
-            Day = day;
+            WorkoutTemplateID = workoutTemplateID;
             Amount = amount;
         }
+        public Workout()
+        {
 
-        public string Title { get; }
-        public string Amount { get; }
-        public int Day { get; }
-        public Guid ID { get; }
+        }
+
+    
+        public string Title { get; set; }
+        public string Amount { get; set; }
+        public int WorkoutTemplateID { get; set; }
+    }
+
+
+    public class WorkoutMessage
+    {
+        //public IEnumerable<Workout> Workouts { get; set; }
+        public IEnumerable<WorkoutTemplate> WorkoutTemplates { get; set; }
     }
 }
 

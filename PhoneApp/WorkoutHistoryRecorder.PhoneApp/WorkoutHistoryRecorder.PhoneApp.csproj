@@ -12,7 +12,41 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="protobuf-net" Version="3.1.25" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\WorkoutHistoryRecorder.Contract\WorkoutHistoryRecorder.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Pages\WorkoutList\WorkoutListPage.xaml.cs">
+      <DependentUpon>WorkoutListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\WorkoutRecordList\WorkoutRecordListPage.xaml.cs">
+      <DependentUpon>WorkoutRecordListPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\WorkoutList\WorkoutListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\WorkoutTemplates\WorkoutTemplatePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\Workout\WorkoutPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Pages\WorkoutRecordList\WorkoutRecordListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

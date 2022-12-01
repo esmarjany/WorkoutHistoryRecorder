@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:workoutlist="clr-namespace:WorkoutHistoryRecorder.PhoneApp.Pages.WorkoutList"
+             x:Class="WorkoutHistoryRecorder.PhoneApp.Pages.WorkoutListPage" Appearing="ContentPage_Appearing">
+    <ContentPage.Content>
+        <StackLayout FlowDirection="RightToLeft">
+            <ListView ItemsSource="{Binding Workouts}" Margin="0,0,0,10"
+                      >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" >
+                                <Button Text="Del" Command="{Binding DeleteCommand} "></Button>
+                                <Button Text="Edit" Command="{Binding UpdateCommand} "></Button>
+                                <Label VerticalTextAlignment="Center"  Text="{Binding Workout.Title}"></Label>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Add" Command="{Binding AddCommand}"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

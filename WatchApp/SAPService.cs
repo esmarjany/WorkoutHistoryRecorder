@@ -18,6 +18,7 @@ namespace WorkoutHistoryRecorder.WatchApp
         public event EventHandler<DataReceivedEventArgs> DataReceived = delegate { };
         public async Task<bool> Connect()
         {
+            //return false;
             try
             {
                 Agent = await Agent.GetAgent("/example/companion");
@@ -50,6 +51,17 @@ namespace WorkoutHistoryRecorder.WatchApp
             if (Peer != null)
             {
                 Connection.Send(ChannelId, Encoding.Unicode.GetBytes(message));
+            }
+            else
+            {
+                throw new Exception("Connect to phone first");
+            }
+        }
+        public void SendBytes(byte[] message)
+        {
+            if (Peer != null)
+            {
+                Connection.Send(ChannelId, message);
             }
             else
             {

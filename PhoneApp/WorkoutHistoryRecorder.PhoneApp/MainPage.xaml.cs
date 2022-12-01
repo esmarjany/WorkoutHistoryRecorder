@@ -4,14 +4,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorkoutHistoryRecorder.PhoneApp.Pages;
+using WorkoutHistoryRecorder.PhoneApp.Pages.WorkoutTemplates;
 using Xamarin.Forms;
 
 namespace App2
 {
     public partial class MainPage : ContentPage
     {
-        public static string ReceivedMessage;
-        public static string StaticConnection = "No connection";
         public IProviderService provider { get; set; }
         public MainPage()
         {
@@ -20,16 +20,10 @@ namespace App2
             BindingContext = this;
         }
 
-        public string ConnectionString
-        {
-            get => StaticConnection;
-        }
-
         private void Button_Clicked_Close(object sender, EventArgs e)
         {
             provider.CloseConnection();
         }
-
 
         private string entryString;
         public string EntryString
@@ -47,15 +41,19 @@ namespace App2
             provider.SendData(EntryString);
         }
 
-        public string FromWatch
+        private void Button_Clicked(object sender, EventArgs e)
         {
-            get => ReceivedMessage;
+            Navigation.PushModalAsync(new WorkoutTemplatePage());
         }
 
-        private void Button_Clicked_Refresh(object sender, EventArgs e)
+        private void Button_Clicked_1(object sender, EventArgs e)
         {
-            OnPropertyChanged(nameof(FromWatch));
-            OnPropertyChanged(nameof(ConnectionString));
+            Navigation.PushModalAsync(new WorkoutRecordListPage());
+        }
+
+        private void Button_Clicked_2(object sender, EventArgs e)
+        {
+            //Navigation.PushModalAsync(new WorkoutListPage());
         }
     }
 }

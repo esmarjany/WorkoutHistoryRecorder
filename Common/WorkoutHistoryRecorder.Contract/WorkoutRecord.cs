@@ -1,20 +1,23 @@
 ﻿using System;
 namespace WorkoutHistoryRecorder.Contract
 {
-    public class WorkoutRecord
+    public class WorkoutRecord:EntityBase
     {
-        public WorkoutRecord(Guid id, Guid workoutID, decimal record, DateTime date)
+        public WorkoutRecord(int id, int workoutID, decimal record, DateTime date)
         {
             ID = id;
             WorkoutID = workoutID;
             Record = record;
             Date = date;
         }
+        public WorkoutRecord()
+        {
 
-        public Guid ID { get; }
-        public Guid WorkoutID { get; }
+        }
+
+        public int WorkoutID { get; set; }
         public decimal Record { get; set; }
-        public DateTime Date { get; }
+        public DateTime Date { get; set; }
         public bool IsDone { get => Record != 0; }
     }
 }

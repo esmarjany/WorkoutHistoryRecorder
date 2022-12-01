@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -8,12 +7,9 @@ using Android.Runtime;
 using AndroidX.Core.App;
 using App2;
 using App2.Droid;
-using App2.Droid.Provider;
 using Com.Samsung.Android.Sdk;
 using Com.Samsung.Android.Sdk.Accessory;
 using Java.Interop;
-using Newtonsoft.Json;
-using WorkoutHistoryRecorder.Contract;
 // https://docs.microsoft.com/en-us/xamarin/android/platform/binding-java-library/
 // https://xamarinhelp.com/creating-xamarin-android-binding-library/
 
@@ -26,20 +22,14 @@ namespace WearableCompanion.Droid
     {
         public static readonly string TAG = typeof(ProviderService).Name;
         public static IBinder mBinder { get; private set; }
-
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
-        public static ProviderServiceSocket mSocketServiceProvider;
-
-        private readonly Task _task;
+        public static ProviderServiceSocket SocketServiceProvider;
+        NotificationManager manager;
         private static readonly int CHANNEL_ID = 104;
-
         const int pendingIntentId = 0;
         const string channelId = "sample_channel_01";
         const string channelName = "Accessory_SDK_Sample";
-
-        NotificationManager manager;
         bool channelInitialized = false;
-
 
         [Export(SuperArgumentsString = "\"ProviderService\", ProviderService_ProviderServiceSocket.class")]
         public ProviderService() : base("ProviderService", SASOCKET_CLASS)
@@ -50,11 +40,6 @@ namespace WearableCompanion.Droid
         public override void OnDestroy()
         {
             base.OnDestroy();
-
-            if (_task != null && _task.Status == TaskStatus.RanToCompletion)
-            {
-                _task.Dispose();
-            }
         }
 
         // Explanation of whats happening, Bound Service
@@ -123,12 +108,12 @@ namespace WearableCompanion.Droid
 
             int notifyID = 1;
 
-            Intent intent = new Intent(Application.Context, typeof(MainActivity));
+            Intent intent = new Intent(Android.App.Application.Context, typeof(MainActivity));
             intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
 
-            PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.Immutable);
+            PendingIntent pendingIntent = PendingIntent.GetActivity(Android.App.Application.Context, pendingIntentId, intent, PendingIntentFlags.Immutable);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(Android.App.Application.Context, channelId)
                 .SetAutoCancel(true)
                 .SetContentTitle("Wearable")
                 .SetContentText("Connected to your watch")
@@ -145,7 +130,7 @@ namespace WearableCompanion.Droid
 
         void CreateNotificationChannel()
         {
-            manager = (NotificationManager)Application.Context.GetSystemService(Application.NotificationService);
+            manager = (NotificationManager)Android.App.Application.Context.GetSystemService(NotificationService);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
@@ -161,11 +146,11 @@ namespace WearableCompanion.Droid
 
         public void SendData(string msg)
         {
-            if (mSocketServiceProvider != null)
+            if (SocketServiceProvider != null)
             {
                 try
                 {
-                    mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.Unicode.GetBytes(msg));
+                    SocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.Unicode.GetBytes(msg));
                 }
                 catch (Exception e)
                 {
@@ -173,7 +158,20 @@ namespace WearableCompanion.Droid
                 }
             }
         }
-
+        public void SendData(byte[] msg)
+        {
+            if (SocketServiceProvider != null)
+            {
+                try
+                {
+                    SocketServiceProvider.Send(CHANNEL_ID, msg);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("SendData error: " + e);
+                }
+            }
+        }
         protected override void OnFindPeerAgentsResponse(SAPeerAgent[] p0, int result)
         {
 #if DEBUG
@@ -194,23 +192,19 @@ namespace WearableCompanion.Droid
         protected override void OnServiceConnectionRequested(SAPeerAgent p0)
         {
             if (p0 != null)
-            {
                 AcceptServiceConnectionRequest(p0);
-
-            }
         }
 
         // this is where the connection socket is called
         protected override void OnServiceConnectionResponse(SAPeerAgent p0, SASocket socket, int result)
         {
             // Cache(socket);
-            if ((result == SAAgent.ConnectionSuccess))
+            if (result == ConnectionSuccess)
             {
-                if ((socket != null))
+                if (socket != null)
                 {
-                    MainPage.StaticConnection = "Connected to watch";
-                    mSocketServiceProvider = (ProviderServiceSocket)(socket);
-                    mSocketServiceProvider.OnDataRecived += MSocketServiceProvider_OnDataRecived;
+                    SocketServiceProvider = (ProviderServiceSocket)socket;
+                    SocketServiceProvider.OnDataRecived += MSocketServiceProvider_OnDataRecived;
                 }
 
             }
@@ -222,89 +216,20 @@ namespace WearableCompanion.Droid
             }
         }
 
-        private void MSocketServiceProvider_OnDataRecived(byte[] bytes)
+        protected virtual void MSocketServiceProvider_OnDataRecived(byte[] bytes)
         {
-            // Check received data 
-            string message = System.Text.Encoding.Unicode.GetString(bytes);
-            MainPage.ReceivedMessage = message;
-#if DEBUG
-            Console.WriteLine("Received: ", message);
-#endif
 
-            var whatcCommand = JsonConvert.DeserializeObject<WatchCommand>(message);
-            if (whatcCommand != null)
-            {
-                switch (whatcCommand.CommandType)
-                {
-                    case CommandType.None:
-                        break;
-                    case CommandType.GetWorkoutList:
-                        SendList();
-                        break;
-                    case CommandType.StoreRecord:
-                        break;
-                    case CommandType.Message:
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        private void SendList()
-        {
-            var list = new List<WorkoutRecord> {
-           };
-            var res = JsonConvert.SerializeObject(new PhoneResult(CommandType.GetWorkoutList, JsonConvert.SerializeObject(list)));
-            SendData(res);
-        }
-
-        private bool processUnsupportedException(SsdkUnsupportedException e)
-        {
-#if DEBUG
-            Console.WriteLine(e.ToString());
-#endif
-
-            if (e.Equals(SsdkUnsupportedException.VendorNotSupported)
-                        || e.Equals(SsdkUnsupportedException.DeviceNotSupported))
-            {
-                StopSelf();
-            }
-            else if (e.Equals(SsdkUnsupportedException.LibraryNotInstalled))
-            {
-#if DEBUG
-                Console.WriteLine(TAG + "You need to install Samsung Accessory SDK to use this application.");
-#endif
-
-            }
-            else if (e.Equals(SsdkUnsupportedException.LibraryUpdateIsRequired))
-            {
-#if DEBUG
-                Console.WriteLine(TAG + "You need to update Samsung Accessory SDK to use this application.");
-
-#endif
-            }
-            else if (e.Equals(SsdkUnsupportedException.LibraryUpdateIsRecommended))
-            {
-#if DEBUG
-                Console.WriteLine(TAG + TAG, "We recommend that you update your Samsung Accessory SDK before using this application.");
-
-#endif
-                return false;
-            }
-
-            return true;
         }
 
         public bool CloseConnection()
         {
-            if ((mSocketServiceProvider != null))
+            if ((SocketServiceProvider != null))
             {
-                mSocketServiceProvider.Close();
-                mSocketServiceProvider = null;
+                SocketServiceProvider.Close();
+                SocketServiceProvider = null;
 
-                Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
-                Application.Context.StopService(serviceIntent);
+                Intent serviceIntent = new Intent(Android.App.Application.Context, typeof(ProviderService));
+                Android.App.Application.Context.StopService(serviceIntent);
 
                 return true;
             }

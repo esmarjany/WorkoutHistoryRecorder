@@ -21,11 +21,22 @@ namespace WorkoutHistoryRecorder.WatchApp.Pages.WorkoutRecords
             get { return WorkoutRecord.Record.ToString(); }
             set
             {
-                decimal r = 0;
+                decimal r;
                 decimal.TryParse(value, out r);
                 WorkoutRecord.Record = r;
             }
         }
+
+        public decimal RecordD
+        {
+            get { return WorkoutRecord.Record; }
+            set
+            {
+                WorkoutRecord.Record = value;
+                OnPropertyChanged(nameof(Record));
+            }
+        }
+        
         public Workout Workout { get; }
         public WorkoutRecord WorkoutRecord { get; set; }
         public ICommand SaveCommand { get; set; }

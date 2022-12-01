@@ -29,7 +29,6 @@ namespace WearableCompanion.Droid
             {
                 // ResetCache();
                 Close();
-                MainPage.StaticConnection = "No connection to watch";
                 Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
                 Application.Context.StopService(serviceIntent);
             }

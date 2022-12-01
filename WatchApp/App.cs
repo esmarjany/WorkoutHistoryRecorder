@@ -24,87 +24,82 @@ namespace TizenNoXaml
 {
     public class App : Xamarin.Forms.Application
     {
+        SyncDataService SyncDataService;
         public App()
         {
             MyLoger.Log("App started!");
-            _SAPService = new SAPService();
-            _SAPService.DataReceived += Connection_DataReceived;
-            StorageService.Init();            
-            MainPage = new CirclePage
+            SyncDataService = new SyncDataService();
+            try
             {
-                Content = new StackLayout
+                StorageService.Init();
+                MainPage = new CirclePage
                 {
-                    VerticalOptions = LayoutOptions.EndAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Children = {
+                    Content = new StackLayout
+                    {
+                        VerticalOptions = LayoutOptions.EndAndExpand,
+                        HorizontalOptions = LayoutOptions.Center,
+                        Children = {
                     new Button {
                         Text = "Connect",
-                        Command = new Command(Connect)
+                        Command = new Command(SyncDataService.Connect)
+                    },
+                    new Button {
+                        Text = "Get Workout",
+                        Command = new Command(()=>{SyncDataService.ReciveWorkout(); })
                     },
                     AppButton(),
-                    MessageToPhone(),
                     ClearFileByutton(),
                     ListButton()
                 }
-                }
-            };
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                MyLoger.Log(ex);
+            }
+            MainPage.Appearing += MainPage_Appearing;
+            MyLoger.Log("App End!");
         }
+
+        private void MainPage_Appearing(object sender, EventArgs e)
+        {
+            try
+            {
+               // SyncDataService.SyncReords();
+            }
+            catch (Exception ex)
+            {
+                MyLoger.Log(ex);
+            }
+            MyLoger.Log("Appearing!");
+        }
+
 
         private View ClearFileByutton()
         {
             return new Button
             {
                 Text = "Reset DB",
-                Command = new Command(() => { StorageService.ResetDB();Toast.DisplayText("Reseted !!!"); })
+                Command = new Command(() => { StorageService.ResetDB(); Toast.DisplayText("Reseted !!!"); })
             };
         }
-
-        SAPService _SAPService;
 
         private Button ListButton()
         {
             var button = new Button { Text = "List" };
+            button.On<Xamarin.Forms.PlatformConfiguration.Tizen>().SetStyle(ButtonStyle.Bottom);
             button.Clicked += async (sender, e) =>
             {
-                await ShowList();// _SAPService.SendText(JsonConvert.SerializeObject(new WatchCommand(CommandType.GetWorkoutList, "")));
+                await ShowList();
             };
             return button;
         }
 
-
-        private Button MessageToPhone()
-        {
-            var button = new Button { Text = "Message to phone", Command = new Command(Button_Clicked_Send), };
-            button.On<Xamarin.Forms.PlatformConfiguration.Tizen>().SetStyle(ButtonStyle.Bottom);
-            return button;
-        }
-
-        private async void Connect()
-        {
-            if (await _SAPService.Connect())
-                Toast.DisplayText("Connected");
-            else
-                Toast.DisplayText("Connection failed!");
-        }
         private Button AppButton()
         {
             var button = new Button { Text = "Launch Store", Command = new Command(DeepLinkLaunchStore) };
-            button.On<Xamarin.Forms.PlatformConfiguration.Tizen>().SetStyle(ButtonStyle.SelectMode);
             return button;
-        }
-
-        private void Button_Clicked_Send()
-        {
-            try
-            {
-                _SAPService.SendText("Hello from watch!");
-                ShowMessage("Sent to phone");
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("SendMessage error: " + ex);
-            }
         }
 
         private void DeepLinkLaunchStore()
@@ -126,7 +121,6 @@ namespace TizenNoXaml
             }
         }
 
-
         private void ShowMessage(string message, string debugLog = null)
         {
             Toast.DisplayText(message, 1000);
@@ -135,36 +129,6 @@ namespace TizenNoXaml
                 debugLog = message;
             }
             Console.WriteLine("[DEBUG] " + message);
-        }
-
-        private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
-        {
-            var message = Encoding.Unicode.GetString(e.Data);
-            var res = JsonConvert.DeserializeObject<PhoneResult>(message);
-            if (res != null)
-            {
-                switch (res.CommandType)
-                {
-                    case CommandType.None:
-                        break;
-                    case CommandType.GetWorkoutList:
-                        ListRecived(res);
-                        break;
-                    case CommandType.StoreRecord:
-                        break;
-                    case CommandType.Message:
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-        }
-        private async void ListRecived(PhoneResult res)
-        {
-            var wworkouts = JsonConvert.DeserializeObject<List<Workout>>(res.Result);
-            StorageService.SetWorkout(wworkouts);
-            await ShowList();
         }
 
         private async Task ShowList()
@@ -195,20 +159,6 @@ namespace TizenNoXaml
         protected override void OnResume()
         {
             // Handle when your app resumes
-        }
-    }
-
-    class MyLoger
-    {
-        public static void Log(string content)
-        {
-            Tizen.Log.Info("MyApp", content);
-        }
-
-        internal static void Log(Exception ex)
-        {
-            Log(ex.Message);
-            Log(ex.StackTrace);
         }
     }
 }
